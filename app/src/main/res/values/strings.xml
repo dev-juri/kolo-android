@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">kolo-android</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="fullName">Full name</string>
+    <string name="phone">Phone Number</string>
+    <string name="amount">Amount</string>
+    <string name="acctName">Account Name</string>
+    <string name="acctNumber">Account Number</string>
+    <string name="remarks">Remarks</string>
+</resources>
