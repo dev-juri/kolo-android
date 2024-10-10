@@ -31,5 +31,5 @@ interface KoloDao {
     fun getTransactions(): LiveData<List<DbTransactions>>
 
     @Query("DELETE FROM Transactions")
-    suspend fun deleteTransaction()
+    suspend fun deleteTransactions()
 }

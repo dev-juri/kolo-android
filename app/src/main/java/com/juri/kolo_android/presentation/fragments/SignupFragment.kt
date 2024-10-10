@@ -12,7 +12,9 @@ import com.juri.kolo_android.databinding.FragmentSignupBinding
 import com.juri.kolo_android.presentation.viewmodels.AuthViewModel
 import com.juri.kolo_android.utils.DataState
 import com.juri.kolo_android.utils.viewBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignupFragment : Fragment(R.layout.fragment_signup) {
 
     private val binding by viewBinding(FragmentSignupBinding::bind)
@@ -25,9 +27,10 @@ class SignupFragment : Fragment(R.layout.fragment_signup) {
         binding.signup.setOnClickListener {
             val email = binding.emailAddress.editText?.text.toString().trim().lowercase()
             val fullName = binding.nameField.editText?.text.toString().trim()
-            val phoneNumber = binding.phoneField.editText?.text.toString().trim()
+            var phoneNumber = binding.phoneField.editText?.text.toString().trim()
             val password = binding.passwordField.editText?.text.toString().trim()
 
+            phoneNumber = phoneNumber.replaceFirst("0", "+234")
             if (email.isNotEmpty() && fullName.isNotEmpty() && phoneNumber.isNotEmpty() && password.isNotEmpty()) {
                 viewModel.register(RegisterBody(fullName, email, phoneNumber, password))
             } else {

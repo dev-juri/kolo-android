@@ -10,6 +10,7 @@ import com.juri.kolo_android.databinding.FragmentHomeBinding
 import com.juri.kolo_android.presentation.adapters.TransactionAdapter
 import com.juri.kolo_android.presentation.viewmodels.HomeViewModel
 import com.juri.kolo_android.utils.currencyFormatterDecimal
+import com.juri.kolo_android.utils.observeOnce
 import com.juri.kolo_android.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,10 +29,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         adapter = TransactionAdapter()
         binding.txnRecycler.adapter = adapter
 
+        viewModel.user.observeOnce(viewLifecycleOwner) {
+            viewModel.fetchTxns(it.id)
+        }
+
         viewModel.user.observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.txtBal.text = currencyFormatterDecimal((it.balance) / 100)
-                viewModel.fetchTxns(it.id)
             }
         }
 
@@ -40,6 +44,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 binding.txnEmptyState.visibility = View.GONE
                 adapter.submitList(it)
             } else {
+                adapter.submitList(emptyList())
                 binding.txnEmptyState.visibility = View.VISIBLE
             }
         }

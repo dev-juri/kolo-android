@@ -1,15 +1,12 @@
 package com.juri.kolo_android.presentation.fragments
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
+import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -29,62 +26,58 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        wbView = binding.paystackCheckoutWebview
-        wbView.settings.apply {
+        loadCheckout(navArgs.authUrl)
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (wbView.canGoBack()) {
+                        wbView.goBack() // Navigate back in the WebView's history
+                    } else {
+                        // No more history in WebView, close the fragment
+                        findNavController().popBackStack()
+                    }
+                }
+            })
+
+    }
+
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun loadCheckout(authorizationUrl: String) {
+        val webView: WebView = binding.paystackCheckoutWebview
+        webView.settings.apply {
             javaScriptEnabled = true
+            javaScriptCanOpenWindowsAutomatically = true
             domStorageEnabled = true
         }
-        wbView.webViewClient = MyWebViewClient()
-        wbView.loadUrl(navArgs.authUrl)
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (wbView.canGoBack()) {
-                    wbView.goBack() // Navigate back in the WebView's history
-                } else {
-                    // No more history in WebView, close the fragment
-                    findNavController().popBackStack()
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                val url: Uri? = request?.url
+
+                if (url?.toString()?.contains("callback", ignoreCase = false) == true) {
+                    findNavController().navigateUp()
+                    return true
                 }
-            }
-        })
+                if (url?.toString()
+                        ?.contains("cancel", ignoreCase = false) == true || url?.toString()
+                        ?.contains("close", ignoreCase = false) == true
+                ) {
+                    findNavController().navigateUp()
+                    return true
+                }
 
+                return super.shouldOverrideUrlLoading(view, request)
+            }
+        }
+
+        webView.loadUrl(authorizationUrl)
     }
 
-    inner class MyWebViewClient : WebViewClient() {
-
-        private fun checkInternetConnection(context: Context): Boolean {
-            val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-            val network = connectivityManager.activeNetwork ?: return false
-            val networkCapabilities =
-                connectivityManager.getNetworkCapabilities(network) ?: return false
-
-            return networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                    networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-        }
-
-        override fun shouldOverrideUrlLoading(
-            view: WebView?,
-            request: WebResourceRequest?
-        ): Boolean {
-            if (request?.url?.scheme == "http" || request?.url?.scheme == "https") {
-                // Open external links in a browser
-                view?.loadUrl(request.url.toString())
-                return true
-            }
-            return false
-        }
-
-        override fun onReceivedError(
-            view: WebView?,
-            request: WebResourceRequest?,
-            error: WebResourceError?
-        ) {
-            super.onReceivedError(view, request, error)
-            Toast.makeText(requireContext(), error?.description.toString(), Toast.LENGTH_SHORT)
-                .show()
-        }
-    }
 
 }

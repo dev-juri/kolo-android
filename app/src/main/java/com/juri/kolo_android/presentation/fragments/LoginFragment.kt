@@ -24,6 +24,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.signup.setOnClickListener {
+            this.findNavController().navigate(R.id.action_loginFragment_to_signupFragment)
+        }
+
         binding.login.setOnClickListener {
             val email = binding.emailAddress.editText?.text.toString().trim().lowercase()
             val password = binding.passwordField.editText?.text.toString().trim()

@@ -44,6 +44,7 @@ class AuthViewModel @Inject constructor(private val repository: Repository) : Vi
 
     fun register(registerBody: RegisterBody) {
         viewModelScope.launch {
+            _dataState.value = DataState.LOADING
             when (val result = repository.registerUser(registerBody)) {
                 is NetworkResult.Success -> {
                     _errorMessage.value = ""

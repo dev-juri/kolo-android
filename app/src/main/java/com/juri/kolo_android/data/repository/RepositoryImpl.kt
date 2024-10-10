@@ -170,6 +170,7 @@ class RepositoryImpl @Inject constructor(
                 user.balance = body.data.balance
 
                 db.insertUser(user)
+                db.deleteTransactions()
                 db.insertTransaction(*body.data.toDbModel())
                 NetworkResult.Success(body)
             }else{
