@@ -15,6 +15,7 @@ fun TransactionData.toDbModel(): Array<DbTransactions> {
             created = it.created,
             update = it.update,
             accountName = it.accountName,
+            bankName = it.bankName,
             accountNumber = it.accountNumber,
             remarks = it.remarks
         )

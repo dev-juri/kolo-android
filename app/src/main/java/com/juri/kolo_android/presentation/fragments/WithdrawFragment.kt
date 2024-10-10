@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.juri.kolo_android.R
 import com.juri.kolo_android.data.local.entities.DbUser
 import com.juri.kolo_android.data.model.WithdrawBody
@@ -24,6 +25,8 @@ class WithdrawFragment : Fragment(R.layout.fragment_withdraw) {
 
     private lateinit var user: DbUser
 
+    private val navArgs by navArgs<WithdrawFragmentArgs>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -32,11 +35,22 @@ class WithdrawFragment : Fragment(R.layout.fragment_withdraw) {
         binding.withdrawBtn.setOnClickListener {
             val amount = binding.amountField.editText?.text.toString().trim()
             val name = binding.nameField.editText?.text.toString().trim()
+            val bankName = binding.bankNameField.editText?.text.toString().trim()
             val acctNum = binding.acctNumField.editText?.text.toString().trim()
             val remarks = binding.remarksField.editText?.text.toString().trim()
 
             if (amount.isNotEmpty() && name.isNotEmpty() && acctNum.isNotEmpty()) {
-                viewModel.withdraw(WithdrawBody(user.id, name, acctNum, remarks, amount.toDouble()))
+                viewModel.withdraw(
+                    WithdrawBody(
+                        user.id,
+                        name,
+                        acctNum,
+                        bankName,
+                        remarks,
+                        amount.toDouble(),
+                        navArgs.familyId
+                    )
+                )
             } else {
                 Toast.makeText(
                     requireContext(),

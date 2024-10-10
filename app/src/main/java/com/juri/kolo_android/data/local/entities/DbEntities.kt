@@ -10,7 +10,6 @@ data class DbUser(
     val fullName: String,
     val email: String,
     val phoneNumber: String,
-    var balance: Double,
     val created: String,
     val updated: String
 )
@@ -27,6 +26,18 @@ data class DbTransactions(
     val created: String,
     val update: String,
     val accountName: String?,
+    val bankName: String?,
     val accountNumber: String?,
     val remarks: String?
 )
+
+@Entity(tableName = "Family")
+data class DbFamily(
+    @PrimaryKey(autoGenerate = false)
+    val id: Int,
+    val familyCode: String,
+    val ownerId: Int,
+    val name: String,
+    var balance: Double,
+)
+

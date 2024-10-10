@@ -7,63 +7,65 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.juri.kolo_android.R
-import com.juri.kolo_android.data.model.LoginBody
-import com.juri.kolo_android.databinding.FragmentLoginBinding
-import com.juri.kolo_android.presentation.viewmodels.AuthViewModel
+import com.juri.kolo_android.data.local.entities.DbUser
+import com.juri.kolo_android.data.model.JoinFamilyBody
+import com.juri.kolo_android.databinding.FragmentJoinFamilyBinding
+import com.juri.kolo_android.presentation.viewmodels.FamilyViewModel
 import com.juri.kolo_android.utils.DataState
+import com.juri.kolo_android.utils.observeOnce
 import com.juri.kolo_android.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LoginFragment : Fragment(R.layout.fragment_login) {
+class JoinFamilyFragment: Fragment(R.layout.fragment_join_family) {
 
-    private val binding by viewBinding(FragmentLoginBinding::bind)
+    private val binding by viewBinding(FragmentJoinFamilyBinding::bind)
 
-    private val viewModel: AuthViewModel by viewModels()
+    private val viewModel : FamilyViewModel by viewModels()
+
+    private lateinit var user: DbUser
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.signup.setOnClickListener {
-            this.findNavController().navigate(R.id.action_loginFragment_to_signupFragment)
-        }
+        observeStates()
 
-        binding.login.setOnClickListener {
-            val email = binding.emailAddress.editText?.text.toString().trim().lowercase()
-            val password = binding.passwordField.editText?.text.toString().trim()
-
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                viewModel.login(LoginBody(email, password))
+        binding.joinFamilyBtn.setOnClickListener {
+            val code = binding.familyCodeField.editText?.text.toString().trim()
+            if (code.isNotEmpty()) {
+                viewModel.joinFamily(JoinFamilyBody(code), user.id)
             } else {
                 Toast.makeText(
                     requireContext(),
-                    "No field should be left blank",
+                    "No field should be left blank.",
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
-
-        observeStates()
     }
 
     private fun observeStates() {
+
+        viewModel.user.observeOnce(viewLifecycleOwner) {
+            user = it
+        }
 
         viewModel.dataState.observe(viewLifecycleOwner) {
             if (it != null) {
                 when (it) {
                     DataState.SUCCESS -> {
-                        binding.login.isEnabled = true
+                        binding.joinFamilyBtn.isEnabled = true
                         binding.progressBar.visibility = View.GONE
-                        this.findNavController().navigate(R.id.action_loginFragment_to_exploreFragment)
+                        findNavController().navigate(R.id.action_joinFamilyFragment_to_homeFragment)
                     }
 
                     DataState.ERROR -> {
-                        binding.login.isEnabled = true
+                        binding.joinFamilyBtn.isEnabled = true
                         binding.progressBar.visibility = View.GONE
                     }
 
                     else -> {
-                        binding.login.isEnabled = false
+                        binding.joinFamilyBtn.isEnabled = false
                         binding.progressBar.visibility = View.VISIBLE
                     }
                 }
@@ -79,5 +81,4 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             }
         }
     }
-
 }

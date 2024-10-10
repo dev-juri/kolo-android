@@ -1,8 +1,11 @@
 package com.juri.kolo_android.data.remote
 
 import com.juri.kolo_android.data.model.AuthResponse
+import com.juri.kolo_android.data.model.CreateFamilyBody
 import com.juri.kolo_android.data.model.DepositBody
 import com.juri.kolo_android.data.model.DepositResponse
+import com.juri.kolo_android.data.model.FamilyResponse
+import com.juri.kolo_android.data.model.JoinFamilyBody
 import com.juri.kolo_android.data.model.LoginBody
 import com.juri.kolo_android.data.model.RegisterBody
 import com.juri.kolo_android.data.model.TransactionResponse
@@ -29,9 +32,26 @@ interface KoloService {
     @POST("transactions/withdraw")
     suspend fun withdraw(@Body withdrawBody: WithdrawBody): Response<WithdrawResponse>
 
-    @GET("transactions/{userId}")
-    suspend fun fetchTxns(@Path("userId", encoded = true) userId: Int) : Response<TransactionResponse>
+    @GET("transactions/{familyId}")
+    suspend fun fetchTxns(
+        @Path(
+            "familyId",
+            encoded = true
+        ) familyId: Int
+    ): Response<TransactionResponse>
 
     @GET("transactions/verify")
     suspend fun verifyTxn(@Query("reference") ref: String)
+
+    @POST("family/create/{userId}")
+    suspend fun createFamily(
+        @Body createFamilyBody: CreateFamilyBody,
+        @Path("userId") userId: Int
+    ): Response<FamilyResponse>
+
+    @POST("/family/join/{userId}")
+    suspend fun joinFamily(
+        @Body joinFamilyBody: JoinFamilyBody,
+        @Path("userId") userId: Int
+    ): Response<FamilyResponse>
 }

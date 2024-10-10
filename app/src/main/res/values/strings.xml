@@ -10,4 +10,7 @@
     <string name="acctName">Account Name</string>
     <string name="acctNumber">Account Number</string>
     <string name="remarks">Remarks</string>
+    <string name="bankName">Bank Name</string>
+    <string name="family_name">Family Name</string>
+    <string name="family_code">Family Code</string>
 </resources>

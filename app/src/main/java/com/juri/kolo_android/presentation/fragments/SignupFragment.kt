@@ -54,7 +54,7 @@ class SignupFragment : Fragment(R.layout.fragment_signup) {
                     DataState.SUCCESS -> {
                         binding.signup.isEnabled = true
                         binding.progressBar.visibility = View.GONE
-                        this.findNavController().navigate(R.id.action_signupFragment_to_homeFragment)
+                        this.findNavController().navigate(R.id.action_signupFragment_to_exploreFragment)
                     }
 
                     DataState.ERROR -> {

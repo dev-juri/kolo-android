@@ -22,6 +22,8 @@ class HomeViewModel @Inject constructor(private val repository: Repository): Vie
 
     val transactions = repository.txns
 
+    val family = repository.family
+
     fun fetchTxns(userId: Int) {
         viewModelScope.launch {
             repository.fetchTransactions(userId)

@@ -6,11 +6,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.juri.kolo_android.R
+import com.juri.kolo_android.data.local.entities.DbFamily
 import com.juri.kolo_android.databinding.FragmentHomeBinding
 import com.juri.kolo_android.presentation.adapters.TransactionAdapter
 import com.juri.kolo_android.presentation.viewmodels.HomeViewModel
 import com.juri.kolo_android.utils.currencyFormatterDecimal
-import com.juri.kolo_android.utils.observeOnce
 import com.juri.kolo_android.utils.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,6 +21,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val viewModel: HomeViewModel by viewModels()
 
+    private lateinit var family: DbFamily
+
     private lateinit var adapter: TransactionAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -29,8 +31,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         adapter = TransactionAdapter()
         binding.txnRecycler.adapter = adapter
 
-        viewModel.user.observe(viewLifecycleOwner) {
+        viewModel.family.observe(viewLifecycleOwner) {
             if (it != null) {
+                family = it
+                binding.familyCode.text = it.familyCode
+                binding.familyName.text = it.name
                 binding.txtBal.text = currencyFormatterDecimal((it.balance) / 100)
                 viewModel.fetchTxns(it.id)
             }
@@ -47,11 +52,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         binding.depositBtn.setOnClickListener {
-            this.findNavController().navigate(R.id.action_homeFragment_to_depositFragment)
+            this.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToDepositFragment(family.id))
         }
 
         binding.withdrawBtn.setOnClickListener {
-            this.findNavController().navigate(R.id.action_homeFragment_to_withdrawFragment)
+            this.findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToWithdrawFragment(family.id))
         }
     }
 }

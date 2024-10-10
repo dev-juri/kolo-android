@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.juri.kolo_android.data.local.entities.DbFamily
 import com.juri.kolo_android.data.local.entities.DbTransactions
 import com.juri.kolo_android.data.local.entities.DbUser
 
@@ -13,13 +14,10 @@ import com.juri.kolo_android.data.local.entities.DbUser
 interface KoloDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUser(vararg user: DbUser)
+    suspend fun insertUser(user: DbUser)
 
     @Query("SELECT * FROM User LIMIT 1")
     fun getUser(): LiveData<DbUser>
-
-    @Query("SELECT * FROM User WHERE id=:userId")
-    suspend fun getCurrUser(userId: Int): DbUser
 
     @Query("DELETE FROM User")
     suspend fun deleteUser()
@@ -32,4 +30,16 @@ interface KoloDao {
 
     @Query("DELETE FROM Transactions")
     suspend fun deleteTransactions()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFamily(family: DbFamily)
+
+    @Query("SELECT * FROM Family LIMIT 1")
+     fun fetchFamily(): LiveData<DbFamily>
+
+     @Query("DELETE FROM Family")
+     suspend fun deleteFamily()
+
+    @Query("SELECT * FROM Family WHERE id=:familyId")
+    suspend fun getCurrFamily(familyId: Int): DbFamily
 }

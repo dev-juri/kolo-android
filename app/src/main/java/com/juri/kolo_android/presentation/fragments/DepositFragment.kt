@@ -5,7 +5,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavArgs
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.juri.kolo_android.R
 import com.juri.kolo_android.data.local.entities.DbUser
 import com.juri.kolo_android.data.model.DepositBody
@@ -24,6 +26,8 @@ class DepositFragment : Fragment(R.layout.fragment_deposit) {
 
     private lateinit var user: DbUser
 
+    private val navArgs by navArgs<DepositFragmentArgs>()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -33,7 +37,7 @@ class DepositFragment : Fragment(R.layout.fragment_deposit) {
             val amount = binding.amountField.editText?.text.toString().trim()
 
             if (amount.isNotEmpty()) {
-                viewModel.deposit(DepositBody(user.id, amount.toDouble()))
+                viewModel.deposit(DepositBody(user.id, navArgs.familyId, amount.toDouble()))
             } else {
                 Toast.makeText(
                     requireContext(),
