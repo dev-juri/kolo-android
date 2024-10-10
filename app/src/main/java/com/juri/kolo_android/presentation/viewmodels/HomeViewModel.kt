@@ -29,4 +29,10 @@ class HomeViewModel @Inject constructor(private val repository: Repository): Vie
             repository.fetchTransactions(userId)
         }
     }
+
+    fun logout() {
+        viewModelScope.launch {
+            repository.logout()
+        }
+    }
 }

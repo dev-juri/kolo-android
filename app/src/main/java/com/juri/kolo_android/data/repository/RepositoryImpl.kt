@@ -249,4 +249,12 @@ class RepositoryImpl @Inject constructor(
                 NetworkResult.Error("Something went wrong, please check your internet connection and try again later.")
             }
         }
+
+    override suspend fun logout() {
+        withContext(dispatcher) {
+            db.deleteFamily()
+            db.deleteUser()
+            db.deleteTransactions()
+        }
+    }
 }

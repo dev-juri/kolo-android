@@ -38,4 +38,6 @@ interface Repository {
     suspend fun withdraw(withdrawBody: WithdrawBody): NetworkResult<WithdrawResponse>
 
     suspend fun fetchTransactions(familyId: Int): NetworkResult<TransactionResponse>
+
+    suspend fun logout()
 }

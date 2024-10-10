@@ -5,6 +5,10 @@
     android:id="@+id/nav_graph.xml"
     app:startDestination="@id/loginFragment">
 
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment" />
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.juri.kolo_android.presentation.fragments.LoginFragment"

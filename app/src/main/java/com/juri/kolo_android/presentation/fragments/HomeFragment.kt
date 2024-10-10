@@ -1,7 +1,12 @@
 package com.juri.kolo_android.presentation.fragments
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -39,6 +44,23 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 binding.txtBal.text = currencyFormatterDecimal((it.balance) / 100)
                 viewModel.fetchTxns(it.id)
             }
+        }
+
+        binding.logoutTxt.setOnClickListener {
+            viewModel.logout()
+            this.findNavController().apply {
+                popBackStack()
+                navigate(R.id.action_global_loginFragment)
+            }
+        }
+
+        binding.familyCode.setOnClickListener {
+            val clipBoardManager =
+                (activity as AppCompatActivity).getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = ClipData.newPlainText("Join ${family.name}", family.familyCode)
+            clipBoardManager.setPrimaryClip(clipData)
+            Toast.makeText(this.context, "Family code copied", Toast.LENGTH_SHORT)
+                .show()
         }
 
         viewModel.transactions.observe(viewLifecycleOwner) {
