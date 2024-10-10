@@ -30,7 +30,8 @@ class SignupFragment : Fragment(R.layout.fragment_signup) {
             var phoneNumber = binding.phoneField.editText?.text.toString().trim()
             val password = binding.passwordField.editText?.text.toString().trim()
 
-            phoneNumber = phoneNumber.replaceFirst("0", "+234")
+            if(!phoneNumber.startsWith("+")) phoneNumber = phoneNumber.replaceFirst("0", "+234")
+
             if (email.isNotEmpty() && fullName.isNotEmpty() && phoneNumber.isNotEmpty() && password.isNotEmpty()) {
                 viewModel.register(RegisterBody(fullName, email, phoneNumber, password))
             } else {

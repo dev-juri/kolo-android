@@ -29,13 +29,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         adapter = TransactionAdapter()
         binding.txnRecycler.adapter = adapter
 
-        viewModel.user.observeOnce(viewLifecycleOwner) {
-            viewModel.fetchTxns(it.id)
-        }
-
         viewModel.user.observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.txtBal.text = currencyFormatterDecimal((it.balance) / 100)
+                viewModel.fetchTxns(it.id)
             }
         }
 
