@@ -31,7 +31,7 @@ object RetrofitModule {
             )
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
             .client(client.build())
-            .baseUrl("https://witty-gar-evolved.ngrok-free.app")
+            .baseUrl("https://kolo-3yf4.onrender.com")
     }
 
     @Singleton
